@@ -24,8 +24,8 @@ impl KBucket {
         }
     }
 
-    pub fn remove_node(&mut self, node_id: &NodeId) {
-        self.nodes.retain(|n| n.id != *node_id);
+    pub fn remove_node(&mut self, node_id: NodeId) {
+        self.nodes.retain(|n| n.id != node_id);
     }
 
     pub fn get_nodes(&self) -> &Vec<KademliaNode> {

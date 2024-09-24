@@ -6,14 +6,13 @@ mod network;
 use node::KademliaNode;
 
 fn main() {
-    let mut node1 = KademliaNode::new(vec![1, 2, 3, 4]);
-    let node2 = KademliaNode::new(vec![5, 6, 7, 8]);
+    let node1 = KademliaNode::new();
+    let node2 = KademliaNode::new();
 
-    // Ajouter le nœud 2 à la table de routage de node1
-    node1.add_node(node2.clone());
+    println!("ID de Node 1 : {:?}", node1.id);
+    println!("ID de Node 2 : {:?}", node2.id);
 
-    // Afficher les nœuds dans la table de routage
-    for node in node1.routing_table.get_nodes() {
-        println!("Node ID: {:?}", node.id);
-    }
+    let distance = node1.distance_to(&node2.id);
+    println!("Distance entre Node 1 et Node 2 : {:?}", distance);
 }
+

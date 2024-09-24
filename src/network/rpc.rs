@@ -1,4 +1,5 @@
-use crate::utils::id::{Node, NodeId};
+use crate::utils::id::NodeId;
+use crate::node::KademliaNode;
 pub struct RpcResponse {
     pub success: bool,
     pub message: String,
@@ -6,12 +7,12 @@ pub struct RpcResponse {
 
 pub struct RpcClient;
 impl RpcClient {
-    pub fn ping(&self, node: &Node) -> RpcResponse {
-        println!("Pinging node: {:?}", node.id);
-        // Simule une réponse de ping
+    pub fn ping(&self, node: &KademliaNode) -> RpcResponse {
+        println!("Pinging node with ID: {:?}", node.id);
+        // Simule le ping
         RpcResponse {
             success: true,
-            message: format!("Node {} is reachable", node.id.iter().map(|b| b.to_string()).collect::<Vec<_>>().join(",")),
+            message: format!("Node with ID {:?} responded", node.id),
         }
     }
 

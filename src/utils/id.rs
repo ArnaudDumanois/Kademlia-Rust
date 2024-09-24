@@ -1,22 +1,11 @@
-use std::net::SocketAddr;
+pub type NodeId = u8; // Représente un ID de 8 bits
 
-pub type NodeId = Vec<u8>;
-
-#[derive(Clone, Debug, PartialEq)]
-pub struct Node {
-    pub id: NodeId,
-    pub addr: SocketAddr,
+/// Génère un identifiant aléatoire pour un nœud Kademlia.
+pub fn generate_random_id() -> NodeId {
+    rand::random::<NodeId>() // Génère un nombre aléatoire de 8 bits
 }
 
-impl Node {
-    pub fn new(id: NodeId, addr: SocketAddr) -> Self {
-        Node { id, addr }
-    }
-}
-
+/// Calcule la distance entre deux identifiants en utilisant XOR.
 pub fn xor_distance(id1: &NodeId, id2: &NodeId) -> NodeId {
-    id1.iter()
-        .zip(id2.iter())
-        .map(|(b1, b2)| b1 ^ b2)
-        .collect()
+    id1 ^ id2 // Applique l'opération XOR
 }
