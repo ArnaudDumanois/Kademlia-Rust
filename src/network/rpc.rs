@@ -7,12 +7,12 @@ pub struct RpcResponse {
 
 pub struct RpcClient;
 impl RpcClient {
-    pub fn ping(&self, node: &KademliaNode) -> RpcResponse {
-        println!("Pinging node with ID: {:?}", node.id);
+    pub fn ping(&self, node_id: &NodeId) -> RpcResponse {
+        println!("Pinging node with ID: {:?}", node_id);
         // Simule le ping
         RpcResponse {
             success: true,
-            message: format!("Node with ID {:?} responded", node.id),
+            message: format!("Node with ID {:?} responded", node_id),
         }
     }
 
@@ -31,6 +31,15 @@ impl RpcClient {
         RpcResponse {
             success: true,
             message: format!("Stored {} -> {}", key, value),
+        }
+    }
+
+    pub fn find_value(&self, key: String) -> RpcResponse {
+        println!("Finding value for key: {}", key);
+        // Simule la recherche d'une valeur
+        RpcResponse {
+            success: true,
+            message: format!("Value for key {} found", key),
         }
     }
 }

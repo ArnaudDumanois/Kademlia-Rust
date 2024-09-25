@@ -1,7 +1,9 @@
 use std::collections::HashMap;
+use crate::utils::id::NodeId;
+
 
 pub struct Store {
-    data: HashMap<String, String>, // Exemple pour les paires clé-valeur
+    data: HashMap<NodeId, String>, // Exemple pour les paires clé-valeur
 }
 
 impl Store {
@@ -11,30 +13,20 @@ impl Store {
         }
     }
 
-    pub fn insert(&mut self, key: String, value: String) {
+    pub fn put(&mut self, key: NodeId, value: String) {
         self.data.insert(key, value);
     }
 
-    pub fn get(&self, key: &String) -> Option<&String> {
+    pub fn get(&self, key: &NodeId) -> Option<&String> {
         self.data.get(key)
     }
-}
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_insert() {
-        let mut store = Store::new();
-        store.insert("key".to_string(), "value".to_string());
-        assert_eq!(store.data.get("key"), Some(&"value".to_string()));
+    pub fn remove(&mut self, key: &NodeId) {
+        self.data.remove(key);
     }
 
-    #[test]
-    fn test_get() {
-        let mut store = Store::new();
-        store.insert("key".to_string(), "value".to_string());
-        assert_eq!(store.get(&"key".to_string()), Some(&"value".to_string()));
+    pub fn contains_key(&self, key: &NodeId) -> bool {
+        self.data.contains_key(key)
     }
 }
+

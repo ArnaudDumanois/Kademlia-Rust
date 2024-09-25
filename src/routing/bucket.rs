@@ -3,19 +3,17 @@ use crate::node::KademliaNode;
 
 pub struct KBucket {
     pub nodes: Vec<KademliaNode>,
-    max_size: usize,
 }
 
 impl KBucket {
-    pub fn new(max_size: usize) -> Self {
+    pub fn new() -> Self {
         KBucket {
             nodes: Vec::new(),
-            max_size,
         }
     }
 
     pub fn add_node(&mut self, node: KademliaNode) {
-        if self.nodes.len() < 8 {
+        if self.nodes.len() < 4 {
             self.nodes.push(node);
         } else {
             // bucket is full
