@@ -2,6 +2,7 @@
 
 use crate::utils::id::NodeId;
 
+
 pub struct TreeNode {
     pub id: NodeId,
     pub left: Option<Box<TreeNode>>,
@@ -18,16 +19,22 @@ impl TreeNode {
     }
 }
 
-pub fn insert_node(root: &mut Option<Box<TreeNode>>, id: &NodeId, bit_index: usize) {
-    if let Some(ref mut node) = root {
-        // Vérifie que bit_index ne dépasse pas la taille en bits de l'id
-        if id < &node.id {
-            insert_node(&mut node.left, id, bit_index + 1);
-        } else {
-            insert_node(&mut node.right, id, bit_index + 1);
+// Fonction pour insérer un nœud dans l'arbre
+pub fn insert_node(root: &mut Option<Box<TreeNode>>, new_node_id: NodeId) {
+    match root {
+        Some(ref mut node) => {
+            if new_node_id < node.id {
+                insert_node(&mut node.left, new_node_id);
+            } else {
+                insert_node(&mut node.right, new_node_id);
+            }
         }
-    } else {
-        // Crée un nouveau nœud
-        *root = Some(Box::new(TreeNode::new(id.clone())));
+        None => {
+            *root = Some(Box::new(TreeNode {
+                id: new_node_id,
+                left: None,
+                right: None,
+            }));
+        }
     }
 }

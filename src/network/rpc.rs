@@ -7,8 +7,8 @@ pub struct RpcResponse {
 
 pub struct RpcClient;
 impl RpcClient {
-    pub fn ping(&self, node_id: &NodeId) -> RpcResponse {
-        println!("Pinging node with ID: {:?}", node_id);
+    pub fn ping(&self, node_id: &NodeId, target_id: &NodeId) -> RpcResponse {
+        println!("Node with ID {:?} is pinging the target {:?}", node_id, target_id);
         // Simule le ping
         RpcResponse {
             success: true,

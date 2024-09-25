@@ -13,22 +13,33 @@ pub struct KademliaNode {
 
 impl KademliaNode {
     pub fn new() -> Self {
+        let id = generate_random_id();
         KademliaNode {
-            id: generate_random_id(),
-            routing_table: RoutingTable::new(),
+            id,
             rpc_client: RpcClient,
+            routing_table: RoutingTable::new(id),
             store: Store::new(),
         }
     }
 
-    pub fn ping(&self, target: &KademliaNode) -> bool {
-        let response = self.rpc_client.ping(&target.id);
-        println!("Ping response from node {:?}: {}", target.id, response.message);
+    pub fn ping(&mut self, target_id: NodeId) -> bool {
+        let response = self.rpc_client.ping(&self.id,&target_id);
+        if response.success {
+            self.add_node_to_routing_table(target_id);
+        }
         response.success
     }
 
     pub fn distance_to(&self, target_id: NodeId) -> NodeId {
         utils::id::xor_distance(self.id, target_id)
+    }
+
+    pub fn add_node_to_routing_table(&mut self, node_id: NodeId) {
+        self.routing_table.add_node(node_id);
+    }
+
+    pub fn remove_node_from_routing_table(&mut self, node_id: NodeId) {
+        self.routing_table.remove_node(node_id);
     }
 
     pub fn store_value(&mut self, key: NodeId, value: String) {
@@ -38,6 +49,5 @@ impl KademliaNode {
     pub fn retrieve_value(&self, key: &NodeId) -> Option<String> {
         self.store.get(key).cloned()
     }
-
 }
 
