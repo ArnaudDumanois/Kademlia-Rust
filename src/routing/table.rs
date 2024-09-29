@@ -44,6 +44,14 @@ impl RoutingTable {
         self.buckets.len() - 1
     }
 
+    pub fn fill_bucket(&mut self, nodes: Vec<NodeId>) {
+        // Remplir le K-bucket avec les nœuds fournis
+        for node in nodes {
+            println!("Adding node {:?} to routing table", node);
+            self.add_node(node);
+        }
+    }
+
     pub fn display(&self) {
         // Afficher le contenu de chaque bucket avec la plage de distances
         for (i, bucket) in self.buckets.iter().enumerate() {

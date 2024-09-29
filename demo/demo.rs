@@ -1,5 +1,5 @@
 use kademlia_rust::KademliaNode;
-use kademlia_rust::routing::RoutingTable;
+use rand::Rng;
 fn create_node() -> KademliaNode {
     KademliaNode::new() // Utilise la méthode de création de nœud
 }
@@ -10,43 +10,49 @@ fn test_ping() {
 
 }
 
-fn test() {
+fn test_kbucket() {
     let mut nodes = Vec::new();
     for _ in 0..10 {
         nodes.push(KademliaNode::new());
     }
-    // Afficher l'état initial des K-buckets
-    println!("Initial state of K-buckets:");
+
+    println!("Nodes in network:");
+    print!("Node IDs: ");
     for node in &nodes {
-        println!("Node ID: {:?}", node.id);
-        node.routing_table.display();
+        print!("{} ", node.id);
     }
+    println!();
 
-    // Simuler l'ajout de nœuds dans les K-buckets
-    for target_index in 0..nodes.len() {
-        // Utiliser split_at_mut pour obtenir deux parties mutables
-        let (left, right) = nodes.split_at_mut(target_index + 1);
-        let target_node = &mut left[target_index]; // Emprunt mutable sur le nœud cible
+    // Sélectionner un nœud aléatoire dans la liste des nœuds
+    let random_index = rand::thread_rng().gen_range(0..nodes.len());
 
-        for i in 0..right.len() {
-            let other_node = &right[i]; // Emprunt immuable sur le nœud autre
-            if target_node.id != other_node.id {
-                target_node.ping(other_node.id);
-            }
-        }
-    }
+    // Créer une liste des autres nœuds à partir des parties gauche et droite **avant** de muter `left`
+    let mut other_nodes: Vec<_> = nodes
+        .iter()
+        .enumerate()
+        .filter(|(i, _)| *i != random_index) // Exclure le nœud sélectionné
+        .map(|(_, node)| node.id)
+        .collect();
 
+    // Séparer la liste en deux parties après la création de `other_nodes`
+    let (left, right) = nodes.split_at_mut(random_index + 1);
+    let random_node = &mut left[random_index]; // Emprunt mutable sur le nœud sélectionné
+
+    println!("Other nodes: {:?}", other_nodes);
+
+    // Remplir les buckets du nœud sélectionné avec les autres nœuds
+    random_node.routing_table.fill_bucket(other_nodes);
 
     // Afficher l'état final des K-buckets
-    println!("Final state of K-buckets:");
-    for node in &nodes {
-        println!("Node ID: {:?}", node.id);
-        node.routing_table.display();
-    }
+    println!("Final state of K-buckets (random node {}):", random_index);
+    random_node.routing_table.display();
 }
+
+
+
 
 fn main() {
     // Exécute les tests de la table de routage et du ping
     println!("Démarrage des tests de Kademlia...");
-    test();
+    test_kbucket();
 }
