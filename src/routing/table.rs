@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use crate::node::KademliaNode;
 use crate::routing::bucket::KBucket;
 use crate::utils::id::{NodeId, xor_distance};
@@ -21,7 +22,6 @@ impl RoutingTable {
         let distance = xor_distance(node_id, self.local_node_id);
         // Déterminer l'index du K-bucket approprié en fonction de la distance
         let bucket_index = self.get_bucket_index(distance);
-        println!("Adding node {:?} to bucket {}", node_id, bucket_index);
         // Ajouter le nœud au K-bucket déterminé
         self.buckets[bucket_index].add_node(node_id);
     }
@@ -47,9 +47,36 @@ impl RoutingTable {
     pub fn fill_bucket(&mut self, nodes: Vec<NodeId>) {
         // Remplir le K-bucket avec les nœuds fournis
         for node in nodes {
-            println!("Adding node {:?} to routing table", node);
             self.add_node(node);
         }
+    }
+
+    pub fn find_closest_nodes(&self, target_id: &NodeId, k: usize) -> Vec<NodeId> {
+        let mut nodes_with_distance: Vec<(NodeId, NodeId)> = Vec::new();
+        let mut seen_nodes: HashSet<NodeId> = HashSet::new(); // Utiliser un HashSet pour éviter les doublons
+
+        for bucket in &self.buckets {
+            for node_id in &bucket.nodes { // Itérer sur les nœuds sans les cloner
+                // Si le nœud a déjà été vu, on passe à l'itération suivante
+                if seen_nodes.contains(node_id) {
+                    continue;
+                }
+                let distance = xor_distance(*node_id, *target_id);
+                nodes_with_distance.push((*node_id, distance));
+                seen_nodes.insert(*node_id); // Marquer ce nœud comme vu
+            }
+        }
+
+        // Trier par distance
+        nodes_with_distance.sort_by_key(|(_, distance)| *distance);
+
+        // Prendre les k plus proches nœuds
+        print!("Closest nodes: ");
+        nodes_with_distance.iter().take(k).for_each(|(id, distance)| {
+            print!("{} ", id);
+        });
+        println!();
+        nodes_with_distance.iter().take(k).map(|(id, _)| id.clone()).collect()
     }
 
     pub fn display(&self) {

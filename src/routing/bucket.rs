@@ -29,5 +29,9 @@ impl KBucket {
     pub fn get_nodes(&self) -> &Vec<NodeId> {
         &self.nodes
     }
+
+    pub fn contains(&self, node_id: &NodeId) -> bool {
+        self.nodes.contains(node_id)
+    }
 }
 
