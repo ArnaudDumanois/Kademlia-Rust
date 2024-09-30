@@ -17,14 +17,7 @@ impl RoutingTable {
         }
     }
 
-    pub fn add_node(&mut self, node_id: NodeId) {
-        // Calculer la distance avec le nœud local
-        let distance = xor_distance(node_id, self.local_node_id);
-        // Déterminer l'index du K-bucket approprié en fonction de la distance
-        let bucket_index = self.get_bucket_index(distance);
-        // Ajouter le nœud au K-bucket déterminé
-        self.buckets[bucket_index].add_node(node_id);
-    }
+
 
     pub fn remove_node(&mut self, node_id: NodeId) {
         let bucket_index = self.get_bucket_index(xor_distance(node_id, self.local_node_id)); // Utiliser la distance pour déterminer le bucket
@@ -32,20 +25,23 @@ impl RoutingTable {
     }
 
     pub fn get_bucket_index(&self, distance: NodeId) -> usize {
-        // Trouver l'index du bucket en fonction de la distance
         for i in 0..self.buckets.len() {
             let min_distance = 1 << i; // 2^i
             let max_distance = 1 << (i + 1); // 2^(i+1)
             if distance >= min_distance && distance < max_distance {
-                return i; // Retourne l'index du bucket correspondant
+                return i;
             }
         }
-        // Si aucune condition n'est remplie, retourne le dernier bucket
         self.buckets.len() - 1
     }
 
+    pub fn add_node(&mut self, node_id: NodeId) {
+        let distance = xor_distance(node_id, self.local_node_id);
+        let bucket_index = self.get_bucket_index(distance);
+        self.buckets[bucket_index].add_node(node_id);
+    }
+
     pub fn fill_bucket(&mut self, nodes: Vec<NodeId>) {
-        // Remplir le K-bucket avec les nœuds fournis
         for node in nodes {
             self.add_node(node);
         }

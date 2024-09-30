@@ -81,14 +81,18 @@ fn test_find_node() {
     // Ajouter chaque nœud au réseau
     network.add_nodes(nodes);
 
-    println!("Nodes in network:");
-    print!("Node IDs: ");
-    for node in network.nodes.values() {
-        print!("{} ", node.id); // Afficher les NodeId des nœuds du réseau
-    }
-    println!();
+    network.display();
 
+    // Sélectionner un nœud aléatoire pour la recherche
+    let origin_node = network.get_first_node().unwrap();
+    let target_node = network.get_random_node().unwrap();
 
+    println!("Origin node: {:?}", origin_node.id);
+    println!("Target node: {:?}", target_node.id);
+    network.display();
+
+    // Rechercher le nœud cible à partir du nœud d'origine
+    let response = origin_node.find_node(target_node.id,&network);
 
 }
 

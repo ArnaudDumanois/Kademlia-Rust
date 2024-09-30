@@ -33,7 +33,7 @@ impl KademliaNode {
         response.success
     }
 
-    pub fn find_node(&mut self, target_id: NodeId, network: &KademliaNetwork) -> Option<NodeId> {
+    pub fn find_node(&self, target_id: NodeId, network: &KademliaNetwork) -> Option<NodeId> {
         // Étape 1 : Vérifier dans le K-Bucket local
         if self.routing_table.buckets.iter().any(|bucket| bucket.contains(&target_id)) {
             println!("Found in local K-bucket of node {:?}", self.id);

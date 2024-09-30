@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use rand::Rng;
 use crate::node::KademliaNode;
 use crate::utils::id::NodeId;
 
@@ -25,5 +26,34 @@ impl KademliaNetwork {
 
     pub fn get_node(&self, node_id: &NodeId) -> Option<&KademliaNode> {
         self.nodes.get(node_id)
+    }
+
+    pub fn get_nodes(&self) -> Vec<&KademliaNode> {
+        self.nodes.values().collect()
+    }
+
+    pub fn get_first_node(&self) -> Option<&KademliaNode> {
+        self.nodes.values().next()
+    }
+
+
+    pub fn get_other_nodes(&self, node_id: &NodeId) -> Vec<&KademliaNode> {
+        self.nodes.values().filter(|node| node.id != *node_id).collect()
+    }
+
+    pub fn get_random_node(&self) -> Option<&KademliaNode> {
+        let mut rng = rand::thread_rng();
+        let index = rng.gen_range(0..self.nodes.len());
+        self.nodes.values().nth(index)
+    }
+
+
+
+    pub fn display(&self) {
+        print!("Nodes in the network:");
+        for (node_id, node) in &self.nodes {
+            print!(" {:?},", node_id);
+        }
+        println!();
     }
 }
